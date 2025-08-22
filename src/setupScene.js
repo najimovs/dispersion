@@ -16,6 +16,7 @@ export function setupScene() {
 
 	const controls = new MapControls( camera )
 	controls.autoRotate = true
+	controls.autoRotateSpeed = 10
 	controls.enableDamping = true
 	controls.zoomToCursor = true
 	controls.connect( renderer.domElement )
