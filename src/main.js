@@ -18,15 +18,30 @@ for ( let i = 0; i < geometry.attributes.position.count; i++ ) {
 
 geometry.setAttribute( "velocity", new THREE.Float32BufferAttribute( velocity, 1 ) )
 
+//
+
+update()
+
+function update() {
+
+	requestAnimationFrame( update )
+	disperse()
+}
+
 // Dispersion
-const positionAttribute = geometry.attributes.position
-const velocityAttribute = geometry.attributes.velocity
-const tmp = new THREE.Vector3()
-const scale = 0.5
+function disperse() {
 
-for( let i = 0; i < positionAttribute.count; i++ ) {
+	const positionAttribute = geometry.attributes.position
+	const velocityAttribute = geometry.attributes.velocity
+	const tmp = new THREE.Vector3()
+	const scale = 0.01
 
-	tmp.fromBufferAttribute( positionAttribute, i )
-	tmp.addScaledVector( tmp, velocityAttribute.getX( i ) * scale )
-	positionAttribute.setXYZ( i, ...tmp )
+	for( let i = 0; i < positionAttribute.count; i++ ) {
+
+		tmp.fromBufferAttribute( positionAttribute, i )
+		tmp.addScaledVector( tmp, velocityAttribute.getX( i ) * scale )
+		positionAttribute.setXYZ( i, ...tmp )
+	}
+
+	positionAttribute.needsUpdate = true
 }
