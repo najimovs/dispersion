@@ -90,23 +90,30 @@ function setReturnVelocityForAllVertices() {
 
 //
 
+let lastTime = 0
+
 update()
 
-function update() {
+function update( time = 0 ) {
 
 	requestAnimationFrame( update )
-	disperse()
+	
+	const deltaTime = ( time - lastTime ) / 1_000
+	lastTime = time
+	
+	disperse( deltaTime )
 }
 
 // Dispersion
-function disperse() {
+function disperse( deltaTime ) {
 
 	const positionAttribute = geometry.attributes.position
 	const velocityAttribute = geometry.attributes.velocity
 	const originalPositionAttribute = geometry.attributes.originalPosition
 	const tmp = new THREE.Vector3()
 	const original = new THREE.Vector3()
-	const scale = 0.1
+	const speed = 5 // units per second
+	const scale = 1 // small scale for fine movement
 
 	for( let i = 0; i < positionAttribute.count; i++ ) {
 
@@ -115,7 +122,7 @@ function disperse() {
 		if ( velocity > 0 ) {
 
 			tmp.fromBufferAttribute( positionAttribute, i )
-			tmp.addScaledVector( tmp, velocity * scale )
+			tmp.addScaledVector( tmp, velocity * scale * speed * deltaTime )
 			positionAttribute.setXYZ( i, ...tmp )
 		}
 		else if ( velocity < 0 ) {
@@ -124,7 +131,7 @@ function disperse() {
 			original.fromBufferAttribute( originalPositionAttribute, i )
 
 			const direction = original.clone().sub( tmp )
-			tmp.add( direction.multiplyScalar( Math.abs( velocity ) * scale ) )
+			tmp.add( direction.multiplyScalar( Math.abs( velocity ) * scale * speed * deltaTime ) )
 			positionAttribute.setXYZ( i, ...tmp )
 
 			if ( tmp.distanceTo( original ) < 0.01 ) {

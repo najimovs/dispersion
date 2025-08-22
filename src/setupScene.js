@@ -15,6 +15,7 @@ export function setupScene() {
 	renderer.setSize( window.innerWidth, window.innerHeight )
 
 	const controls = new MapControls( camera )
+	controls.autoRotate = true
 	controls.enableDamping = true
 	controls.zoomToCursor = true
 	controls.connect( renderer.domElement )
